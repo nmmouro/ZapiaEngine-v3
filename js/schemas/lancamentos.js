@@ -89,7 +89,8 @@ export const SCHEMA_LANCAMENTOS = {
             label: "Hora",
             type: "time",
             required: true,
-            visible: true
+            visible: true,
+            step: 60
         },
 
         // ========================================================
