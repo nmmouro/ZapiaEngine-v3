@@ -71,7 +71,7 @@ export const SCHEMA_LANCAMENTOS = {
         // ========================================================
 
         {
-            name: "data",
+            name: "data_cadastro",
             label: "Data",
             type: "date",
             required: true,
