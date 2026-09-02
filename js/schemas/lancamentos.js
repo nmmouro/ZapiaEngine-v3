@@ -47,8 +47,8 @@ export const SCHEMA_LANCAMENTOS = {
         },
 
         {
-            name: "empregado",
-            label: "Empregado",
+            name: "id_empregado",
+            label: "ID Empregado",
             type: "text",
             visible: false,
             hidden: true,
@@ -57,8 +57,8 @@ export const SCHEMA_LANCAMENTOS = {
         },
 
         {
-            name: "veiculo",
-            label: "Veículo",
+            name: "id_veiculo",
+            label: "ID Veículo",
             type: "text",
             visible: false,
             hidden: true,
