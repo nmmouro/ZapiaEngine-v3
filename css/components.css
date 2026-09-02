@@ -1,0 +1,856 @@
+/* ============================================================
+   COMPONENTS.CSS
+   Painel Frota
+   Componentes reutilizáveis
+   ============================================================ */
+
+
+/* ============================================================
+   BOTÕES
+   ============================================================ */
+
+.btn {
+    appearance: none;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 40px;
+
+    padding: 9px 16px;
+
+    border: 1px solid transparent;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.1s ease;
+}
+
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+
+.btn:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+.btn-primary {
+    background: #2563eb;
+    border-color: #2563eb;
+
+    color: #ffffff;
+}
+
+
+.btn-primary:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+
+.btn-secondary {
+    background: #ffffff;
+    border-color: #d1d5db;
+
+    color: #374151;
+}
+
+
+.btn-secondary:hover {
+    background: #f3f4f6;
+}
+
+
+.btn-danger {
+    background: #dc2626;
+    border-color: #dc2626;
+
+    color: #ffffff;
+}
+
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+
+/* ============================================================
+   BOTÃO TELA CHEIA
+   ============================================================ */
+
+.btn-fullscreen {
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+
+    padding: 0;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #374151;
+
+    font-size: 1.1rem;
+
+    cursor: pointer;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.btn-fullscreen:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+
+/* ============================================================
+   TOOLBAR
+   ============================================================ */
+
+.engine-toolbar {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+
+    padding: 14px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+}
+
+
+/* ============================================================
+   FORMULÁRIO
+   ============================================================ */
+
+.engine-form-container {
+    width: 100%;
+
+    margin-bottom: 20px;
+}
+
+
+.engine-form-wrapper {
+    width: 100%;
+
+    padding: 20px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+
+.engine-form-header {
+    margin-bottom: 20px;
+
+    padding-bottom: 12px;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+
+.engine-form-header h2 {
+    margin: 0;
+
+    font-size: 1.2rem;
+
+    font-weight: 700;
+
+    color: #111827;
+}
+
+
+.engine-form-fields {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+.engine-field {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    min-width: 0;
+}
+
+
+.engine-field label {
+    font-size: 0.86rem;
+
+    font-weight: 600;
+
+    color: #374151;
+}
+
+
+.engine-field input,
+.engine-field select,
+.engine-field textarea {
+    width: 100%;
+
+    min-height: 40px;
+
+    padding: 9px 11px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #111827;
+
+    font-family: inherit;
+
+    font-size: 0.9rem;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.engine-field textarea {
+    min-height: 100px;
+
+    resize: vertical;
+}
+
+
+.engine-field input:focus,
+.engine-field select:focus,
+.engine-field textarea:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+
+.engine-field input:disabled,
+.engine-field select:disabled,
+.engine-field textarea:disabled {
+    background: #f3f4f6;
+
+    cursor: not-allowed;
+}
+
+
+.engine-required {
+    margin-left: 3px;
+
+    color: #dc2626;
+}
+
+
+.engine-form-actions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 22px;
+
+    padding-top: 16px;
+
+    border-top: 1px solid #e5e7eb;
+}
+
+
+.engine-checkbox {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    cursor: pointer;
+}
+
+
+.engine-checkbox input {
+    width: auto;
+
+    min-height: auto;
+}
+
+
+.engine-radio-group {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 14px;
+}
+
+
+.engine-radio-group label {
+    display: inline-flex;
+
+    flex-direction: row;
+
+    align-items: center;
+
+    gap: 6px;
+
+    font-weight: 400;
+}
+
+
+/* ============================================================
+   TABELA
+   ============================================================ */
+
+.engine-table-container {
+    width: 100%;
+
+    overflow-x: auto;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+}
+
+
+.engine-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 700px;
+}
+
+
+.engine-table th {
+    padding: 12px 14px;
+
+    background: #f9fafb;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    color: #374151;
+
+    font-size: 0.82rem;
+
+    font-weight: 700;
+
+    text-align: left;
+
+    white-space: nowrap;
+}
+
+
+.engine-table td {
+    padding: 11px 14px;
+
+    border-bottom: 1px solid #f0f1f3;
+
+    color: #374151;
+
+    font-size: 0.88rem;
+
+    vertical-align: middle;
+}
+
+
+.engine-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+
+.engine-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* ============================================================
+   AÇÕES DA TABELA
+   ============================================================ */
+
+.engine-table-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    white-space: nowrap;
+}
+
+
+.btn-table {
+    min-height: 32px;
+
+    padding: 6px 10px;
+
+    font-size: 0.78rem;
+}
+
+
+/* ============================================================
+   STATUS
+   ============================================================ */
+
+.status {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 82px;
+
+    padding: 4px 9px;
+
+    border-radius: 999px;
+
+    font-size: 0.74rem;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+.status-livre {
+    background: #dcfce7;
+    color: #166534;
+}
+
+
+.status-ocupado {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+
+.status-viagem {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+
+.status-manutencao {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+
+.status-andamento {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+
+.status-agendado {
+    background: #ede9fe;
+    color: #5b21b6;
+}
+
+
+.status-concluido {
+    background: #dcfce7;
+    color: #166534;
+}
+
+
+.status-cancelado {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+
+.status-default {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+
+.cards-container {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+
+    gap: 16px;
+}
+
+
+.card {
+    padding: 18px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+
+.card-title {
+    margin-bottom: 8px;
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    color: #6b7280;
+}
+
+
+.card-value {
+    font-size: 1.5rem;
+
+    font-weight: 700;
+
+    color: #111827;
+}
+
+
+/* ============================================================
+   RESUMO
+   ============================================================ */
+
+.resumo-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(180px, 1fr));
+
+    gap: 14px;
+
+    margin-bottom: 20px;
+}
+
+
+.resumo-item {
+    padding: 16px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+}
+
+
+.resumo-item-label {
+    font-size: 0.8rem;
+
+    color: #6b7280;
+}
+
+
+.resumo-item-value {
+    margin-top: 4px;
+
+    font-size: 1.35rem;
+
+    font-weight: 700;
+
+    color: #111827;
+}
+
+
+/* ============================================================
+   HOME MENU
+   ============================================================ */
+
+.menu-card {
+    min-height: 140px;
+
+    padding: 22px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    color: #111827;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.menu-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #cbd5e1;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+
+.menu-card-title {
+    font-size: 1rem;
+
+    font-weight: 700;
+}
+
+
+.menu-card-description {
+    font-size: 0.82rem;
+
+    color: #6b7280;
+
+    text-align: center;
+}
+
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+
+.loading-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.82);
+
+    backdrop-filter: blur(2px);
+}
+
+
+.loading-content {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 24px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+
+.loading-spinner {
+    width: 34px;
+    height: 34px;
+
+    border: 3px solid #e5e7eb;
+
+    border-top-color: #2563eb;
+
+    border-radius: 50%;
+
+    animation:
+        engine-spin 0.8s linear infinite;
+}
+
+
+@keyframes engine-spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+
+.toast {
+    position: fixed;
+
+    right: 20px;
+    bottom: 20px;
+
+    z-index: 10000;
+
+    max-width: 380px;
+
+    padding: 13px 16px;
+
+    background: #111827;
+
+    color: #ffffff;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.18);
+
+    font-size: 0.88rem;
+}
+
+
+/* ============================================================
+   VAZIO
+   ============================================================ */
+
+.engine-form-empty,
+.engine-table-empty {
+    padding: 35px 20px;
+
+    text-align: center;
+
+    color: #6b7280;
+
+    font-size: 0.9rem;
+}
+
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+    .engine-form-fields {
+        grid-template-columns: 1fr;
+    }
+
+
+    .engine-form-wrapper {
+        padding: 15px;
+    }
+
+
+    .engine-toolbar {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+
+    .engine-form-actions {
+        flex-direction: column-reverse;
+
+        align-items: stretch;
+    }
+
+
+    .engine-form-actions .btn {
+        width: 100%;
+    }
+
+
+    .page-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+}
+
+
+/* ============================================================
+   CAIXA ALTA — DADOS TEXTUAIS
+   ============================================================ */
+.engine-field input[type="text"],
+.engine-field textarea {
+    text-transform: uppercase;
+}

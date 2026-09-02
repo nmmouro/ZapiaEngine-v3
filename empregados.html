@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Cadastro de Empregados
+    </title>
+
+
+    <!-- ============================================================
+         CSS GLOBAL
+    ============================================================ -->
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/components.css"
+    >
+
+</head>
+
+
+<body data-page="empregados" data-page-title="Empregados">
+
+
+    <header data-header class="app-header"></header>
+
+
+    <!-- ============================================================
+         CONTAINER PRINCIPAL
+    ============================================================ -->
+
+    <main
+        id="app"
+        class="app-container"
+    >
+
+        <!-- O Engine cria aqui:
+             - cabeçalho
+             - toolbar
+             - formulário
+             - tabela
+             - ações
+             - mensagens
+        -->
+
+    </main>
+
+
+    <!-- ============================================================
+         ENGINE — PÁGINA EMPREGADOS
+    ============================================================ -->
+
+    <script type="module" src="./js/app.js"></script>
+    <script type="module">
+        import { iniciarHeader } from "./js/components/header.js";
+        iniciarHeader({ logo: "./assets/logo.png", tituloPadrao: "Painel Frota" });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,607 @@
+/* ============================================================
+   STYLE.CSS
+   Painel Frota
+   Estrutura global da aplicação
+   ============================================================ */
+
+
+/* ============================================================
+   RESET
+   ============================================================ */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+
+html {
+    font-size: 16px;
+}
+
+
+body {
+    min-height: 100vh;
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    background: #f4f6f8;
+    color: #1f2937;
+
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   APP
+   ============================================================ */
+
+#app {
+    width: 100%;
+    min-height: 100vh;
+}
+
+
+.app-container {
+    width: 100%;
+    min-height: calc(100vh - 76px);
+
+    padding: 24px;
+
+    margin: 0 auto;
+}
+
+
+/* ============================================================
+   CABEÇALHO
+   ============================================================ */
+
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    width: 100%;
+    height: 76px;
+
+    display: grid;
+
+    grid-template-columns:
+        180px
+        minmax(0, 1fr)
+        180px;
+
+    align-items: center;
+
+    padding: 0 20px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+
+/* ============================================================
+   LOGO
+   ============================================================ */
+
+.app-header-logo {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-start;
+
+    min-width: 0;
+}
+
+
+.app-header-logo img {
+    display: block;
+
+    max-width: 150px;
+    max-height: 52px;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+}
+
+
+.app-logo {
+    max-width: 150px;
+    max-height: 52px;
+
+    object-fit: contain;
+}
+
+
+/* ============================================================
+   TÍTULO
+   ============================================================ */
+
+.app-header-title {
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+
+.app-header-title h1 {
+    margin: 0;
+
+    font-size: 1.35rem;
+
+    font-weight: 700;
+
+    color: #111827;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* ============================================================
+   ÁREA DIREITA
+   ============================================================ */
+
+.app-header-right {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    min-width: 0;
+}
+
+
+/* ============================================================
+   DATA / HORA
+   ============================================================ */
+
+.app-datetime {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    justify-content: center;
+
+    white-space: nowrap;
+}
+
+
+.app-date {
+    font-size: 0.82rem;
+
+    font-weight: 500;
+
+    color: #6b7280;
+}
+
+
+.app-time {
+    font-size: 1rem;
+
+    font-weight: 700;
+
+    color: #111827;
+}
+
+
+/* ============================================================
+   CONTEÚDO
+   ============================================================ */
+
+.app-content {
+    width: 100%;
+    max-width: 1600px;
+
+    margin: 0 auto;
+}
+
+
+/* ============================================================
+   HOME
+   ============================================================ */
+
+.home-container {
+    width: 100%;
+    min-height: calc(100vh - 124px);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+}
+
+
+.home-menu {
+    width: 100%;
+    max-width: 1100px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+
+    gap: 20px;
+}
+
+
+/* ============================================================
+   PÁGINA
+   ============================================================ */
+
+.page-container {
+    width: 100%;
+}
+
+
+.page-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+}
+
+
+.page-title {
+    font-size: 1.5rem;
+
+    font-weight: 700;
+
+    color: #111827;
+}
+
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+    .app-header {
+
+        grid-template-columns:
+            120px
+            minmax(0, 1fr)
+            170px;
+
+        padding: 0 14px;
+
+    }
+
+
+    .app-header-title h1 {
+
+        font-size: 1.15rem;
+
+    }
+
+
+    .app-container {
+
+        padding: 18px;
+
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .app-header {
+
+        height: auto;
+        min-height: 72px;
+
+        grid-template-columns:
+            70px
+            minmax(0, 1fr)
+            auto;
+
+        gap: 10px;
+
+        padding: 10px 12px;
+
+    }
+
+
+    .app-header-logo img,
+    .app-logo {
+
+        max-width: 62px;
+        max-height: 46px;
+
+    }
+
+
+    .app-header-title h1 {
+
+        font-size: 1rem;
+
+    }
+
+
+    .app-datetime {
+
+        display: none;
+
+    }
+
+
+    .app-container {
+
+        padding: 14px;
+
+    }
+
+
+    .home-menu {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+
+/* ============================================================
+   FULLSCREEN
+   ============================================================ */
+
+:fullscreen {
+
+    background: #f4f6f8;
+
+}
+
+
+:fullscreen .app-header {
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+}
+
+
+:fullscreen .app-container {
+
+    padding-top: 100px;
+
+}
+
+
+/* ============================================================
+   CORREÇÃO DO HEADER
+   ------------------------------------------------------------
+   header.js utiliza:
+       .header-logo
+       .header-titulo
+       .header-acoes
+       .header-datahora
+       .header-data
+       .header-hora
+       .header-fullscreen
+
+   Os estilos antigos usavam .app-header-logo etc.
+   Isso fazia o logo ser exibido em seu tamanho natural.
+   ============================================================ */
+
+.app-header .header-logo {
+    min-width: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    overflow: hidden;
+}
+
+.app-header .header-logo img,
+.app-header [data-header-logo] {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 150px;
+    max-height: 52px;
+
+    object-fit: contain;
+}
+
+.app-header .header-titulo {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+.app-header .header-titulo h1 {
+    margin: 0;
+
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+
+    color: #111827;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.app-header .header-acoes {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 12px;
+}
+
+.app-header .header-datahora {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 5px;
+
+    white-space: nowrap;
+}
+
+.app-header .header-data {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.app-header .header-separador {
+    color: #9ca3af;
+}
+
+.app-header .header-hora {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.app-header .header-fullscreen {
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #374151;
+
+    cursor: pointer;
+}
+
+.app-header .header-fullscreen:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+.app-header .header-fullscreen-text {
+    display: none;
+}
+
+
+/* ------------------------------------------------------------
+   RESPONSIVO — HEADER
+   ------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+
+    .app-header .header-logo img,
+    .app-header [data-header-logo] {
+        max-width: 120px;
+        max-height: 48px;
+    }
+
+    .app-header .header-titulo h1 {
+        font-size: 1.15rem;
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .app-header {
+        grid-template-columns:
+            80px
+            minmax(0, 1fr)
+            auto;
+
+        min-height: 72px;
+        height: auto;
+
+        gap: 10px;
+        padding: 10px 12px;
+    }
+
+    .app-header .header-logo img,
+    .app-header [data-header-logo] {
+        max-width: 70px;
+        max-height: 44px;
+    }
+
+    .app-header .header-titulo h1 {
+        font-size: 1rem;
+    }
+
+    .app-header .header-datahora {
+        display: none;
+    }
+
+    .app-header .header-fullscreen {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+    }
+
+}
+
+
+/* ============================================================
+   CAIXA ALTA — CAMPOS DE DADOS
+   ============================================================ */
+
+.engine-form-container input[type="text"],
+.engine-form-container textarea,
+.engine-form-container select {
+    text-transform: uppercase;
+}
