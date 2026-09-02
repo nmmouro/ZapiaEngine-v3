@@ -98,7 +98,7 @@ export const SCHEMA_LANCAMENTOS = {
         // ========================================================
 
         {
-            name: "empregado / matricula",
+            name: "empregado",
             label: "Empregado / Matrícula",
             type: "select",
             required: true,
