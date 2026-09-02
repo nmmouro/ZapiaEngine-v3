@@ -109,7 +109,7 @@ export const SCHEMA_LANCAMENTOS = {
             labelFields: ["empregado", "matricula"],
             
             separator: " / ",
-            targetField: "empregado / matricula"
+            targetField: "empregado"
             
         },
 
