@@ -38,8 +38,7 @@
  * ============================================================
  */
 
-
-import { listar as listarEntidade } from "../services/crudService.js";
+import { listar as listarRelacionados } from "../services/crudService.js";
 
 
 /* ============================================================
@@ -146,13 +145,6 @@ export function createForm(config = {}) {
             criarFormulario();
 
 
-            /*
-             * SELECTS RELACIONAIS
-             *
-             * Campos com source no schema carregam suas opções
-             * diretamente da entidade indicada, usando o valueField
-             * como valor e labelFields como texto apresentado.
-             */
             await carregarSelectsRelacionados();
 
 
@@ -297,31 +289,32 @@ export function createForm(config = {}) {
                     }
 
 
-                    const definicao = obterDefinicaoCampo(nome);
-
-                    /*
-                     * SELECT RELACIONAL:
-                     * o valor persistido fica no campo idField
-                     * (ex.: id_empregado / id_veiculo), enquanto
-                     * o select visível usa o id como value.
-                     */
                     let valor =
                         obterValorRegistro(
                             dados,
                             nome
                         );
 
+                    // SELECT relacional: quando o campo visual não estiver
+                    // persistido, usa o campo ID definido no schema.
                     if (
                         campo.tagName === "SELECT" &&
-                        definicao?.idField
+                        (valor === undefined || valor === null || String(valor) === "")
                     ) {
-                        const idRelacionado =
-                            obterValorRegistro(
+                        const definicao = obterFields().find(
+                            item => obterNomeCampo(item) === nome
+                        );
+
+                        const idField =
+                            definicao?.idField ||
+                            definicao?.id_field ||
+                            "";
+
+                        if (idField) {
+                            valor = obterValorRegistro(
                                 dados,
-                                definicao.idField
+                                idField
                             );
-                        if (idRelacionado !== undefined && idRelacionado !== null && String(idRelacionado).trim() !== "") {
-                            valor = idRelacionado;
                         }
                     }
 
@@ -330,6 +323,16 @@ export function createForm(config = {}) {
                         campo,
                         valor
                     );
+
+                    if (
+                        campo.tagName === "SELECT" &&
+                        campo.dataset.engineIdField
+                    ) {
+                        sincronizarCampoId(
+                            campo,
+                            campo.dataset.engineIdField
+                        );
+                    }
 
                 }
             );
@@ -358,6 +361,8 @@ export function createForm(config = {}) {
 
 
             const dados = {};
+
+            atualizarIdsRelacionados();
 
 
             const elementos =
@@ -415,17 +420,6 @@ export function createForm(config = {}) {
 
                     dados[nome] = valor;
 
-                     const definicao =
-                           obterCampoSchema(nome);
-
-                    if (
-                        campo.tagName === "SELECT" &&
-                        definicao?.idField
-                    ) {
-                        dados[definicao.idField] =
-                            valor === "" ? null : valor;
-                    }
-
                 }
             );
 
@@ -465,8 +459,6 @@ export function createForm(config = {}) {
 
 
             try {
-
-                sincronizarTodosSelectsRelacionados();
 
                 const dados =
                     form.obterDados();
@@ -792,58 +784,6 @@ export function createForm(config = {}) {
         form.container =
             container;
 
-    }
-
-
-   /*
-     * ========================================================
-     * CARREGAR SELECTS RELACIONAIS
-     * ========================================================
-     */
-
-    async function carregarOpcoesRelacionadas() {
-
-        const fields = obterFields();
-
-        const relacionais = fields.filter(campo =>
-            campo &&
-            String(campo.type || campo.tipo || "").toLowerCase() === "select" &&
-            campo.source
-        );
-
-        await Promise.all(relacionais.map(async campo => {
-            try {
-                const registros = await serviceListar(campo.source);
-                const lista = Array.isArray(registros) ? registros : [];
-                const valueField = campo.valueField || "id";
-                const labelFields = Array.isArray(campo.labelFields)
-                    ? campo.labelFields
-                    : [campo.labelField || "nome"];
-                const separator = campo.separator !== undefined
-                    ? String(campo.separator)
-                    : " / ";
-
-                campo.options = lista.map(registro => {
-                    const valor = obterValorRegistro(registro, valueField);
-                    if (valor === undefined || valor === null || String(valor).trim() === "") {
-                        return null;
-                    }
-                    const partes = labelFields.map(campoLabel =>
-                        obterValorRegistro(registro, campoLabel)
-                    ).filter(v => v !== undefined && v !== null && String(v).trim() !== "")
-                     .map(v => String(v).trim());
-                    return {
-                        value: String(valor),
-                        label: partes.length ? partes.join(separator) : String(valor)
-                    };
-                }).filter(Boolean);
-
-                console.log(`FORM ${entity} → SELECT ${campo.name || campo.label}: ${campo.options.length} opções carregadas de ${campo.source}`);
-            } catch (erro) {
-                console.error(`FORM ${entity} → erro ao carregar SELECT ${campo.name || campo.label} da fonte ${campo.source}:`, erro);
-                campo.options = [];
-            }
-        }));
     }
 
 
@@ -1363,6 +1303,9 @@ export function createForm(config = {}) {
                 name="${escaparAtributo(nome)}"
                 ${required}
                 ${disabled}
+                data-engine-select="true"
+                ${campo.source ? `data-engine-source="${escaparAtributo(campo.source)}"` : ""}
+                ${campo.idField ? `data-engine-id-field="${escaparAtributo(campo.idField)}"` : ""}
             >
 
         `;
@@ -1533,6 +1476,232 @@ export function createForm(config = {}) {
 
     /*
      * ========================================================
+     * CARREGAR SELECTS RELACIONADOS
+     * ========================================================
+     *
+     * Campos SELECT que possuem `source` são preenchidos pelo
+     * CRUD Service. O schema somente descreve a relação; ele não
+     * acessa o banco.
+     */
+
+    async function carregarSelectsRelacionados() {
+
+        if (!formulario) {
+            return;
+        }
+
+        const camposSchema = obterFields();
+
+        const selects =
+            formulario.querySelectorAll(
+                'select[data-engine-select="true"]'
+            );
+
+        for (const select of selects) {
+
+            const nome = select.name;
+            const definicao = camposSchema.find(
+                campo =>
+                    obterNomeCampo(campo) === nome
+            );
+
+            if (!definicao || !definicao.source) {
+                continue;
+            }
+
+            try {
+
+                console.log(
+                    `FORM ${entity} → SELECT → carregando ${definicao.source}`
+                );
+
+                const registros = await listarRelacionados(
+                    definicao.source
+                );
+
+                const valorAtual = select.value;
+
+                const idField =
+                    definicao.idField ||
+                    definicao.id_field ||
+                    "";
+
+                const valueField =
+                    definicao.valueField ||
+                    definicao.value_field ||
+                    "id";
+
+                // Remove apenas as opções dinâmicas anteriores.
+                Array.from(select.options)
+                    .slice(1)
+                    .forEach(option => option.remove());
+
+                const placeholder = select.options[0];
+
+                (Array.isArray(registros) ? registros : [])
+                    .forEach(registro => {
+
+                        const valor = obterCampoFlexivel(
+                            registro,
+                            valueField
+                        );
+
+                        if (valor === undefined || valor === null || String(valor) === "") {
+                            return;
+                        }
+
+                        const label = montarLabelRelacionado(
+                            registro,
+                            definicao
+                        );
+
+                        const option = document.createElement("option");
+                        option.value = String(valor);
+                        option.textContent = label;
+
+                        select.appendChild(option);
+                    });
+
+                // Se o registro atual já estiver preenchido, preserva-o.
+                if (valorAtual !== "") {
+                    select.value = valorAtual;
+                }
+
+                // Quando o formulário é novo, o ID oculto começa vazio.
+                if (idField) {
+                    sincronizarCampoId(select, idField);
+                }
+
+                console.log(
+                    `FORM ${entity} → SELECT → ${definicao.source}: ${select.options.length - 1} opções`
+                );
+
+            } catch (erro) {
+
+                console.error(
+                    `FORM ${entity} → SELECT → erro ao carregar ${definicao.source}:`,
+                    erro
+                );
+
+                if (select.options.length === 1) {
+                    select.options[0].textContent =
+                        "Não foi possível carregar os dados";
+                }
+            }
+
+            const idField =
+                definicao.idField ||
+                definicao.id_field ||
+                "";
+
+            if (idField) {
+                select.addEventListener(
+                    "change",
+                    () => sincronizarCampoId(select, idField)
+                );
+            }
+        }
+    }
+
+
+    function obterCampoFlexivel(registro, nome) {
+
+        if (!registro || typeof registro !== "object") {
+            return undefined;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(registro, nome)) {
+            return registro[nome];
+        }
+
+        const chave = Object.keys(registro).find(
+            item => String(item).toLowerCase() === String(nome).toLowerCase()
+        );
+
+        return chave ? registro[chave] : undefined;
+    }
+
+
+    function montarLabelRelacionado(registro, definicao) {
+
+        const fields =
+            Array.isArray(definicao.labelFields)
+                ? definicao.labelFields
+                : (
+                    Array.isArray(definicao.label_fields)
+                        ? definicao.label_fields
+                        : []
+                );
+
+        const separator =
+            definicao.separator !== undefined
+                ? String(definicao.separator)
+                : " / ";
+
+        if (!fields.length) {
+            const valor = obterCampoFlexivel(
+                registro,
+                definicao.valueField || "id"
+            );
+            return String(valor ?? "");
+        }
+
+        return fields
+            .map(field => obterCampoFlexivel(registro, field))
+            .filter(value => value !== undefined && value !== null && String(value).trim() !== "")
+            .map(value => String(value).trim())
+            .join(separator);
+    }
+
+
+    function sincronizarCampoId(select, idField) {
+
+        if (!formulario || !idField) {
+            return;
+        }
+
+        let campoId = formulario.elements.namedItem(idField);
+
+        if (!campoId) {
+            const definicao = obterFields().find(
+                campo => obterNomeCampo(campo) === idField
+            );
+
+            if (definicao) {
+                campoId = document.createElement("input");
+                campoId.type = "hidden";
+                campoId.name = idField;
+                formulario.appendChild(campoId);
+            }
+        }
+
+        if (campoId) {
+            campoId.value = select.value || "";
+        }
+    }
+
+
+    function atualizarIdsRelacionados() {
+
+        if (!formulario) {
+            return;
+        }
+
+        formulario
+            .querySelectorAll('select[data-engine-select="true"]')
+            .forEach(select => {
+
+                const idField = select.dataset.engineIdField;
+
+                if (idField) {
+                    sincronizarCampoId(select, idField);
+                }
+            });
+    }
+
+
+    /*
+     * ========================================================
      * REGISTRAR EVENTOS
      * ========================================================
      */
@@ -1605,9 +1774,6 @@ export function createForm(config = {}) {
 
             }
         );
-
-
-        
 
 
         /*
@@ -1895,7 +2061,7 @@ export function createForm(config = {}) {
 
     }
 
-   
+
     /*
      * ========================================================
      * OPÇÕES
@@ -1961,20 +2127,6 @@ export function createForm(config = {}) {
             }
         );
 
-    }
-
-
-   /*
-     * ========================================================
-     * OBTER DEFINIÇÃO DO CAMPO NO SCHEMA
-     * ========================================================
-     */
-
-    function obterCampoSchema(nome) {
-        const nomeLower = String(nome || "").toLowerCase();
-        return obterFields().find(campo =>
-            String(obterNomeCampo(campo)).toLowerCase() === nomeLower
-        ) || null;
     }
 
 
@@ -2065,6 +2217,19 @@ export function createForm(config = {}) {
 
             return;
 
+        }
+
+
+        /*
+         * SELECT
+         */
+
+        if (campo.tagName === "SELECT") {
+            campo.value =
+                valor === null || valor === undefined
+                    ? ""
+                    : String(valor);
+            return;
         }
 
 
