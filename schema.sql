@@ -11,7 +11,6 @@ create table if not exists public.veiculos (
     ano integer,
     cor text,
     combustivel text,
-    km_inicial numeric,
     km_atual numeric,
     status text not null default 'ATIVO',
     created_at timestamptz not null default now(),

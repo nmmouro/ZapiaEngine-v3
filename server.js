@@ -263,11 +263,7 @@ function normalizarVeiculo(dados = {}) {
         cor: caixaAlta(dados.cor) || null,
 
         combustivel: caixaAlta(dados.combustivel) || null,
-
-        km_inicial: dados.km_inicial !== undefined && dados.km_inicial !== ""
-            ? Number(dados.km_inicial)
-            : null,
-
+        
         km_atual: dados.km_atual !== undefined && dados.km_atual !== ""
             ? Number(dados.km_atual)
             : null,
@@ -277,11 +273,6 @@ function normalizarVeiculo(dados = {}) {
     };
 
 }
-
-
-// ============================================================================
-// CRUD — VEÍCULOS
-// ============================================================================
 
 
 // ============================================================================
