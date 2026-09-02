@@ -107,7 +107,7 @@ export const SCHEMA_LANCAMENTOS = {
             source: "empregados",
             valueField: "id",
             labelFields: ["empregado", "matricula"],
-            
+            idField: "id_empregado",
             separator: " / ",
             targetField: "empregado"
             
@@ -127,7 +127,7 @@ export const SCHEMA_LANCAMENTOS = {
             source: "veiculos",
             valueField: "id",
             labelFields: ["placa", "modelo"],
-            
+            idField: "id_veiculo",
             separator: " - ",
             displayField: "placa"
         },
