@@ -237,19 +237,29 @@ novo() {
 
 
     const campoData =
-        formulario.elements.namedItem(
-            "data"
-        );
+    formulario.querySelector(
+        'input[name="data"]'
+    );
 
 
-    if (campoData) {
+if (campoData) {
 
-        preencherCampo(
-            campoData,
-            `${ano}-${mes}-${dia}`
-        );
+    campoData.value =
+        `${ano}-${mes}-${dia}`;
 
-    }
+
+    console.log(
+        `FORM ${entity} → DATA PREENCHIDA:`,
+        campoData.value
+    );
+
+} else {
+
+    console.warn(
+        `FORM ${entity} → CAMPO "data" NÃO ENCONTRADO`
+    );
+
+}
 
 
     // ----------------------------------------------------
