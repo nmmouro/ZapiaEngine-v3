@@ -106,7 +106,7 @@ export const SCHEMA_LANCAMENTOS = {
 
             source: "empregados",
             valueField: "id",
-            labelFields: ["empregado", "matricula"],
+            labelFields: ["empregado_matricula", "matricula"],
             idField: "id_empregado",
             separator: " / ",
             displayField: "empregado"
@@ -119,7 +119,7 @@ export const SCHEMA_LANCAMENTOS = {
         // ========================================================
 
         {
-            name: "id_veiculo",
+            name: "veiculo",
             label: "Veículo",
             type: "select",
             required: true,
