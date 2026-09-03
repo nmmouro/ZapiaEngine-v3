@@ -118,7 +118,7 @@ async function iniciarLancamentos() {
                 colunas: [
 
         {
-            name: "data_cadastro",
+            name: "data",
             label: "Data"
         },
 
