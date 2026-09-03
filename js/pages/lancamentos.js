@@ -125,7 +125,13 @@ async function iniciarLancamentos() {
 
         {
             name: "hora",
-            label: "Hora"
+            label: "Hora",
+            type: "time",
+            format: valor => {
+                if (!valor) return "";
+
+                return String(valor).substring(0, 5);
+            }
         },
 
         {
