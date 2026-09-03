@@ -60,7 +60,7 @@ export const SCHEMA_LANCAMENTOS = {
 
         {
             name: "data_cadastro",
-            label: "Data",
+            label: "Data de Cadastro",
             type: "date",
             required: true,
             visible: true,
