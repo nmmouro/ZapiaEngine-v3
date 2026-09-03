@@ -119,7 +119,8 @@ async function iniciarLancamentos() {
 
         {
             name: "data",
-            label: "Data"
+            label: "Data",
+            type: "date"
         },
 
         {
