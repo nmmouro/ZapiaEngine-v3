@@ -140,12 +140,12 @@ async function iniciarLancamentos() {
         {
             name: "passageiro_setor_motivo",
             label: "Passageiro / Setor / Motivo"
-        }
+        },
 
         {
             name: "itinerario",
             label: "Itinerário"
-        }
+        },
 
         {
             name: "status",
