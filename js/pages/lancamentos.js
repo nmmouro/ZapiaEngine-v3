@@ -112,7 +112,37 @@ async function iniciarLancamentos() {
                     true,
 
                 pageSize:
-                    10
+                    10,
+
+
+                colunas: [
+
+        {
+            name: "data_cadastro",
+            label: "Data"
+        },
+
+        {
+            name: "hora",
+            label: "Hora"
+        },
+
+        {
+            name: "empregado_matricula",
+            label: "Empregado / Matrícula"
+        },
+
+        {
+            name: "veiculo",
+            label: "Veículo / Modelo"
+        },
+
+        {
+            name: "passageiro_setor_motivo",
+            label: "Passageiro / Setor / Motivo"
+        }
+
+    ]
 
             }
 
