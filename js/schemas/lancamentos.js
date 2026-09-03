@@ -98,7 +98,7 @@ export const SCHEMA_LANCAMENTOS = {
         // ========================================================
 
         {
-            name: "empregado / matricula",
+            name: "empregado_matricula",
             label: "Empregado / Matrícula",
             type: "select",
             required: true,
@@ -106,11 +106,11 @@ export const SCHEMA_LANCAMENTOS = {
 
             source: "empregados",
             valueField: "id",
-            labelFields: ["empregado_matricula", "matricula"],
-            idField: "id_empregado",
+            labelFields: ["empregado", "matricula"],
             separator: " / ",
-            displayField: "empregado"
-            
+
+            idField: "id_empregado",
+            snapshotField: "empregado_matricula"           
             
         },
 
@@ -120,7 +120,7 @@ export const SCHEMA_LANCAMENTOS = {
 
         {
             name: "veiculo",
-            label: "Veículo",
+            label: "Veículo / Modelo",
             type: "select",
             required: true,
             visible: true,
@@ -128,9 +128,10 @@ export const SCHEMA_LANCAMENTOS = {
             source: "veiculos",
             valueField: "id",
             labelFields: ["placa", "modelo"],
-            idField: "id_veiculo",
             separator: " - ",
-            displayField: "placa"
+
+            idField: "id_veiculo",
+            snapshotField: "veiculo"
             
         },
 
