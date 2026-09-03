@@ -65,7 +65,8 @@ export const SCHEMA_LANCAMENTOS = {
             required: true,
             visible: true,
             defaultValue: () =>
-                new Date().toISOString().slice(0, 10)
+                new Date().toISOString().slice(0, 10),
+            defaultNow: true
         },
 
         // ========================================================
@@ -78,7 +79,7 @@ export const SCHEMA_LANCAMENTOS = {
             type: "time",
             required: true,
             visible: true,
-            step: 60
+            defaultNow: true
         },
 
         // ========================================================
