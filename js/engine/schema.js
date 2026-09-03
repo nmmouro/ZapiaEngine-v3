@@ -70,7 +70,7 @@ const SCHEMA_LANCAMENTOS = {
         { name: "id", label: "ID", type: "text", hidden: true },
         { name: "id_empregado", label: "ID Empregado", type: "text", hidden: true },
         { name: "id_veiculo", label: "ID Veículo", type: "text", hidden: true },
-        { name: "data", label: "Data", type: "date", required: true, defaultValue: () => new Date().toISOString().slice(0,10) },
+        { name: "data_cadastro", label: "Data", type: "date", required: true, defaultValue: () => new Date().toISOString().slice(0,10) },
         { name: "hora", label: "Hora", type: "time", required: true },
         {
             name: "empregado_matricula", label: "Empregado / Matrícula", type: "select", required: true,
