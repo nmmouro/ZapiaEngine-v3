@@ -166,7 +166,7 @@ export function createForm(config = {}) {
 
         /* ====================================================
            NOVO
-        ==================================================== */
+        ==================================================== 
 
         novo() {
 
@@ -192,8 +192,122 @@ export function createForm(config = {}) {
             );
 
         },
+*/
+/* ====================================================
+   NOVO
+==================================================== */
+
+novo() {
+
+    garantirInicializado();
 
 
+    console.log(
+        `FORM ${entity} → NOVO`
+    );
+
+
+    form.limpar();
+
+
+    // ====================================================
+    // DATA E HORA ATUAIS
+    // ====================================================
+
+    const agora =
+        new Date();
+
+
+    // ----------------------------------------------------
+    // DATA → YYYY-MM-DD
+    // ----------------------------------------------------
+
+    const ano =
+        agora.getFullYear();
+
+    const mes =
+        String(
+            agora.getMonth() + 1
+        ).padStart(2, "0");
+
+    const dia =
+        String(
+            agora.getDate()
+        ).padStart(2, "0");
+
+
+    const campoData =
+        formulario.elements.namedItem(
+            "data"
+        );
+
+
+    if (campoData) {
+
+        preencherCampo(
+            campoData,
+            `${ano}-${mes}-${dia}`
+        );
+
+    }
+
+
+    // ----------------------------------------------------
+    // HORA → HH:MM
+    // ----------------------------------------------------
+
+    const horas =
+        String(
+            agora.getHours()
+        ).padStart(2, "0");
+
+    const minutos =
+        String(
+            agora.getMinutes()
+        ).padStart(2, "0");
+
+
+    const campoHora =
+        formulario.elements.namedItem(
+            "hora"
+        );
+
+
+    if (campoHora) {
+
+        preencherCampo(
+            campoHora,
+            `${horas}:${minutos}`
+        );
+
+    }
+
+
+    console.log(
+        `FORM ${entity} → NOVO → DATA/HORA:`,
+        `${dia}/${mes}/${ano}`,
+        `${horas}:${minutos}`
+    );
+
+
+    // ====================================================
+    // MOSTRAR FORMULÁRIO
+    // ====================================================
+
+    form.mostrar();
+
+
+    focarPrimeiroCampo();
+
+
+    emitir(
+        "novo"
+    );
+
+},
+
+       
+       
         /* ====================================================
            EDITAR
         ==================================================== */
