@@ -1473,237 +1473,417 @@ export function createForm(config = {}) {
 
     }
 
-
-    /*
-     * ========================================================
-     * CARREGAR SELECTS RELACIONADOS
-     * ========================================================
-     *
+   
+/*
+ * ========================================================
+ * CARREGAR SELECTS RELACIONADOS
+ * ========================================================
+ *
      * Campos SELECT que possuem `source` são preenchidos pelo
      * CRUD Service. O schema somente descreve a relação; ele não
      * acessa o banco.
      */
 
-    async function carregarSelectsRelacionados() {
-
-        if (!formulario) {
-            return;
-        }
-
-        const camposSchema = obterFields();
-
-        const selects =
-            formulario.querySelectorAll(
-                'select[data-engine-select="true"]'
-            );
-
-        for (const select of selects) {
-
-            const nome = select.name;
-            const definicao = camposSchema.find(
-                campo =>
-                    obterNomeCampo(campo) === nome
-            );
-
-            if (!definicao || !definicao.source) {
-                continue;
-            }
-
-            try {
-
-                console.log(
-                    `FORM ${entity} → SELECT → carregando ${definicao.source}`
-                );
-
-                const registros = await listarRelacionados(
-                    definicao.source
-                );
-
-                const valorAtual = select.value;
-
-                const idField =
-                    definicao.idField ||
-                    definicao.id_field ||
-                    "";
-
-                const valueField =
-                    definicao.valueField ||
-                    definicao.value_field ||
-                    "id";
-
-                // Remove apenas as opções dinâmicas anteriores.
-                Array.from(select.options)
-                    .slice(1)
-                    .forEach(option => option.remove());
-
-                const placeholder = select.options[0];
-
-                (Array.isArray(registros) ? registros : [])
-                    .forEach(registro => {
-
-                        const valor = obterCampoFlexivel(
-                            registro,
-                            valueField
-                        );
-
-                        if (valor === undefined || valor === null || String(valor) === "") {
-                            return;
-                        }
-
-                        const label = montarLabelRelacionado(
-                            registro,
-                            definicao
-                        );
-
-                        const option = document.createElement("option");
-                        option.value = String(valor);
-                        option.textContent = label;
-
-                        select.appendChild(option);
-                    });
-
-                // Se o registro atual já estiver preenchido, preserva-o.
-                if (valorAtual !== "") {
-                    select.value = valorAtual;
-                }
-
-                // Quando o formulário é novo, o ID oculto começa vazio.
-                const snapshotField =
-    definicao.snapshotField ||
-    definicao.snapshot_field ||
-    "";
-
-if (idField || snapshotField) {
-
-    sincronizarCampoId(
-        select,
-        idField,
-        snapshotField
-    );
-}
-
-                console.log(
-                    `FORM ${entity} → SELECT → ${definicao.source}: ${select.options.length - 1} opções`
-                );
-
-            } catch (erro) {
-
-                console.error(
-                    `FORM ${entity} → SELECT → erro ao carregar ${definicao.source}:`,
-                    erro
-                );
-
-                if (select.options.length === 1) {
-                    select.options[0].textContent =
-                        "Não foi possível carregar os dados";
-                }
-            }
-
-            const idField =
-                definicao.idField ||
-                definicao.id_field ||
-                "";
-
-            if (idField) {
-                select.addEventListener(
-    "change",
-    () => {
-
-        sincronizarCampoId(
-            select,
-            idField,
-            snapshotField
-        );
-
-    }
-);
-         }
-
-
-    function obterCampoFlexivel(registro, nome) {
-
-        if (!registro || typeof registro !== "object") {
-            return undefined;
-        }
-
-        if (Object.prototype.hasOwnProperty.call(registro, nome)) {
-            return registro[nome];
-        }
-
-        const chave = Object.keys(registro).find(
-            item => String(item).toLowerCase() === String(nome).toLowerCase()
-        );
-
-        return chave ? registro[chave] : undefined;
-    }
-
-
-    function montarLabelRelacionado(registro, definicao) {
-
-        const fields =
-            Array.isArray(definicao.labelFields)
-                ? definicao.labelFields
-                : (
-                    Array.isArray(definicao.label_fields)
-                        ? definicao.label_fields
-                        : []
-                );
-
-        const separator =
-            definicao.separator !== undefined
-                ? String(definicao.separator)
-                : " / ";
-
-        if (!fields.length) {
-            const valor = obterCampoFlexivel(
-                registro,
-                definicao.valueField || "id"
-            );
-            return String(valor ?? "");
-        }
-
-        return fields
-            .map(field => obterCampoFlexivel(registro, field))
-            .filter(value => value !== undefined && value !== null && String(value).trim() !== "")
-            .map(value => String(value).trim())
-            .join(separator);
-    }
-
-
-    function sincronizarCampoId(select, idField, snapshotField = "") {
+async function carregarSelectsRelacionados() {
 
     if (!formulario) {
         return;
     }
 
-    // ========================================================
-    // ID
-    // ========================================================
+    const camposSchema = obterFields();
 
-    if (idField) {
+    const selects =
+        formulario.querySelectorAll(
+            'select[data-engine-select="true"]'
+        );
 
-        let campoId =
-            formulario.elements.namedItem(idField);
+    for (const select of selects) {
 
-        if (!campoId) {
+        const nome = select.name;
 
-            campoId =
-                document.createElement("input");
+        const definicao =
+            camposSchema.find(
+                campo =>
+                    obterNomeCampo(campo) === nome
+            );
 
-            campoId.type = "hidden";
-            campoId.name = idField;
-
-            formulario.appendChild(campoId);
+        if (!definicao || !definicao.source) {
+            continue;
         }
 
-        campoId.value =
-            select.value || "";
+        try {
+
+            console.log(
+                `FORM ${entity} → SELECT → carregando ${definicao.source}`
+            );
+
+            const registros =
+                await listarRelacionados(
+                    definicao.source
+                );
+
+            const valorAtual =
+                select.value;
+
+            const idField =
+                definicao.idField ||
+                definicao.id_field ||
+                (
+                    nome === "id_empregado"
+                        ? "id_empregado"
+                        : nome === "id_veiculo"
+                            ? "id_veiculo"
+                            : ""
+                );
+
+            const snapshotField =
+                definicao.snapshotField ||
+                definicao.snapshot_field ||
+                "";
+
+            const valueField =
+                definicao.valueField ||
+                definicao.value_field ||
+                "id";
+
+
+            /*
+             * Remove opções dinâmicas anteriores
+             */
+
+            Array.from(select.options)
+                .slice(1)
+                .forEach(
+                    option => option.remove()
+                );
+
+
+            /*
+             * Adiciona registros relacionados
+             */
+
+            (Array.isArray(registros)
+                ? registros
+                : []
+            ).forEach(registro => {
+
+                const valor =
+                    obterCampoFlexivel(
+                        registro,
+                        valueField
+                    );
+
+                if (
+                    valor === undefined ||
+                    valor === null ||
+                    String(valor) === ""
+                ) {
+                    return;
+                }
+
+
+                const label =
+                    montarLabelRelacionado(
+                        registro,
+                        definicao
+                    );
+
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    String(valor);
+
+                option.textContent =
+                    label;
+
+                select.appendChild(
+                    option
+                );
+
+            });
+
+
+            /*
+             * Preserva o valor atual
+             */
+
+            if (valorAtual !== "") {
+
+                select.value =
+                    valorAtual;
+
+            }
+
+
+            /*
+             * Sincroniza ID + texto exibido
+             */
+
+            sincronizarCampoId(
+                select,
+                idField,
+                snapshotField
+            );
+
+
+            /*
+             * Evento de alteração
+             */
+
+            select.addEventListener(
+                "change",
+                () => {
+
+                    sincronizarCampoId(
+                        select,
+                        idField,
+                        snapshotField
+                    );
+
+                }
+            );
+
+
+            console.log(
+                `FORM ${entity} → SELECT → ${definicao.source}: ${select.options.length - 1} opções`
+            );
+
+
+        } catch (erro) {
+
+            console.error(
+                `FORM ${entity} → SELECT → erro ao carregar ${definicao.source}:`,
+                erro
+            );
+
+            if (
+                select.options.length === 1
+            ) {
+
+                select.options[0]
+                    .textContent =
+                    "Não foi possível carregar os dados";
+
+            }
+
+        }
+
+    }
+
+}
+
+
+/*
+ * ========================================================
+ * OBTER CAMPO FLEXÍVEL
+ * ========================================================
+ */
+
+function obterCampoFlexivel(
+    registro,
+    nome
+) {
+
+    if (
+        !registro ||
+        typeof registro !== "object"
+    ) {
+        return undefined;
     }
 
 
-    // ========================================================
-    // SNAPSHOT / TEXTO EXIBIDO
-    // ========================================================
+    if (
+        Object.prototype.hasOwnProperty.call(
+            registro,
+            nome
+        )
+    ) {
+
+        return registro[nome];
+
+    }
+
+
+    const chave =
+        Object.keys(registro).find(
+            item =>
+                String(item).toLowerCase() ===
+                String(nome).toLowerCase()
+        );
+
+
+    return chave
+        ? registro[chave]
+        : undefined;
+
+}
+
+
+/*
+ * ========================================================
+ * MONTAR LABEL RELACIONADO
+ * ========================================================
+ */
+
+function montarLabelRelacionado(
+    registro,
+    definicao
+) {
+
+    const fields =
+        Array.isArray(
+            definicao.labelFields
+        )
+            ? definicao.labelFields
+            : (
+                Array.isArray(
+                    definicao.label_fields
+                )
+                    ? definicao.label_fields
+                    : []
+            );
+
+
+    const separator =
+        definicao.separator !== undefined
+            ? String(definicao.separator)
+            : " / ";
+
+
+    if (!fields.length) {
+
+        const valor =
+            obterCampoFlexivel(
+                registro,
+                definicao.valueField ||
+                "id"
+            );
+
+        return String(
+            valor ?? ""
+        );
+
+    }
+
+
+    return fields
+
+        .map(
+            field =>
+                obterCampoFlexivel(
+                    registro,
+                    field
+                )
+        )
+
+        .filter(
+            value =>
+                value !== undefined &&
+                value !== null &&
+                String(value).trim() !== ""
+        )
+
+        .map(
+            value =>
+                String(value).trim()
+        )
+
+        .join(separator);
+
+}
+
+
+/*
+ * ========================================================
+ * SINCRONIZAR ID + SNAPSHOT
+ * ========================================================
+ */
+
+function sincronizarCampoId(
+    select,
+    idField,
+    snapshotField = ""
+) {
+
+    if (!formulario) {
+        return;
+    }
+
+
+    /*
+     * ====================================================
+     * ID
+     * ====================================================
+     *
+     * Quando o próprio SELECT possui name="id_empregado"
+     * ou name="id_veiculo", não precisamos criar outro
+     * campo hidden para o ID.
+     */
+
+    if (
+        idField &&
+        select.name !== idField
+    ) {
+
+        let campoId =
+            formulario.elements.namedItem(
+                idField
+            );
+
+
+        if (!campoId) {
+
+            const definicao =
+                obterFields().find(
+                    campo =>
+                        obterNomeCampo(campo) ===
+                        idField
+                );
+
+
+            if (definicao) {
+
+                campoId =
+                    document.createElement(
+                        "input"
+                    );
+
+                campoId.type =
+                    "hidden";
+
+                campoId.name =
+                    idField;
+
+                formulario.appendChild(
+                    campoId
+                );
+
+            }
+
+        }
+
+
+        if (campoId) {
+
+            campoId.value =
+                select.value || "";
+
+        }
+
+    }
+
+
+    /*
+     * ====================================================
+     * SNAPSHOT
+     * ====================================================
+     *
+     * Copia o texto VISÍVEL da opção selecionada.
+     */
 
     if (snapshotField) {
 
@@ -1712,49 +1892,118 @@ if (idField || snapshotField) {
                 snapshotField
             );
 
+
         if (!campoSnapshot) {
 
             campoSnapshot =
-                document.createElement("input");
+                document.createElement(
+                    "input"
+                );
 
-            campoSnapshot.type = "hidden";
-            campoSnapshot.name = snapshotField;
+            campoSnapshot.type =
+                "hidden";
+
+            campoSnapshot.name =
+                snapshotField;
 
             formulario.appendChild(
                 campoSnapshot
             );
+
         }
+
 
         const option =
             select.options[
                 select.selectedIndex
             ];
 
-        campoSnapshot.value =
+
+        const texto =
             option
                 ? option.textContent.trim()
                 : "";
+
+
+        campoSnapshot.value =
+            texto;
+
+
+        console.log(
+            `FORM ${entity} → SNAPSHOT ${snapshotField}:`,
+            texto
+        );
+
     }
+
 }
 
 
-    function atualizarIdsRelacionados() {
+/*
+ * ========================================================
+ * ATUALIZAR IDS RELACIONADOS
+ * ========================================================
+ */
 
-        if (!formulario) {
-            return;
-        }
+function atualizarIdsRelacionados() {
 
-        formulario
-            .querySelectorAll('select[data-engine-select="true"]')
-            .forEach(select => {
-
-                const idField = select.dataset.engineIdField;
-
-                if (idField) {
-                    sincronizarCampoId(select, idField);
-                }
-            });
+    if (!formulario) {
+        return;
     }
+
+
+    formulario
+        .querySelectorAll(
+            'select[data-engine-select="true"]'
+        )
+        .forEach(
+            select => {
+
+                const nome =
+                    select.name;
+
+
+                const definicao =
+                    obterFields().find(
+                        campo =>
+                            obterNomeCampo(campo) ===
+                            nome
+                    );
+
+
+                if (!definicao) {
+                    return;
+                }
+
+
+                const idField =
+                    definicao.idField ||
+                    definicao.id_field ||
+                    (
+                        nome === "id_empregado"
+                            ? "id_empregado"
+                            : nome === "id_veiculo"
+                                ? "id_veiculo"
+                                : ""
+                    );
+
+
+                const snapshotField =
+                    definicao.snapshotField ||
+                    definicao.snapshot_field ||
+                    "";
+
+
+                sincronizarCampoId(
+                    select,
+                    idField,
+                    snapshotField
+                );
+
+            }
+        );
+
+}
 
 
     /*
