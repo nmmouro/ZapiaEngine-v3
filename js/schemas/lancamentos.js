@@ -37,23 +37,13 @@ export const SCHEMA_LANCAMENTOS = {
         // ========================================================
 
         {
-            name: "id",
-            label: "ID",
-            type: "text",
-            visible: false,
-            hidden: true,
-            readonly: true,
-            required: false
-        },
-
-        {
             name: "empregado_matricula",
             label: "Empregado / Matrícula",
             type: "hidden",
             visible: false,
             hidden: true,
             required: false
-        },
+        },        
 
         {
             name: "veiculo",
