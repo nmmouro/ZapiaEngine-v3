@@ -79,12 +79,7 @@ export const SCHEMA_LANCAMENTOS = {
             type: "time",
             required: true,
             visible: true,
-            defaultNow: true,
-            format: valor => {
-            if (!valor) return "";
-
-            return String(valor).substring(0, 5);
-    }
+            defaultNow: true,            
         },
 
         // ========================================================
