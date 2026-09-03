@@ -1568,9 +1568,19 @@ export function createForm(config = {}) {
                 }
 
                 // Quando o formulário é novo, o ID oculto começa vazio.
-                if (idField) {
-                    sincronizarCampoId(select, idField);
-                }
+                const snapshotField =
+    definicao.snapshotField ||
+    definicao.snapshot_field ||
+    "";
+
+if (idField || snapshotField) {
+
+    sincronizarCampoId(
+        select,
+        idField,
+        snapshotField
+    );
+}
 
                 console.log(
                     `FORM ${entity} → SELECT → ${definicao.source}: ${select.options.length - 1} opções`
@@ -1596,12 +1606,18 @@ export function createForm(config = {}) {
 
             if (idField) {
                 select.addEventListener(
-                    "change",
-                    () => sincronizarCampoId(select, idField)
-                );
-            }
-        }
+    "change",
+    () => {
+
+        sincronizarCampoId(
+            select,
+            idField,
+            snapshotField
+        );
+
     }
+);
+         }
 
 
     function obterCampoFlexivel(registro, nome) {
@@ -1654,31 +1670,72 @@ export function createForm(config = {}) {
     }
 
 
-    function sincronizarCampoId(select, idField) {
+    function sincronizarCampoId(select, idField, snapshotField = "") {
 
-        if (!formulario || !idField) {
-            return;
-        }
+    if (!formulario) {
+        return;
+    }
 
-        let campoId = formulario.elements.namedItem(idField);
+    // ========================================================
+    // ID
+    // ========================================================
+
+    if (idField) {
+
+        let campoId =
+            formulario.elements.namedItem(idField);
 
         if (!campoId) {
-            const definicao = obterFields().find(
-                campo => obterNomeCampo(campo) === idField
+
+            campoId =
+                document.createElement("input");
+
+            campoId.type = "hidden";
+            campoId.name = idField;
+
+            formulario.appendChild(campoId);
+        }
+
+        campoId.value =
+            select.value || "";
+    }
+
+
+    // ========================================================
+    // SNAPSHOT / TEXTO EXIBIDO
+    // ========================================================
+
+    if (snapshotField) {
+
+        let campoSnapshot =
+            formulario.elements.namedItem(
+                snapshotField
             );
 
-            if (definicao) {
-                campoId = document.createElement("input");
-                campoId.type = "hidden";
-                campoId.name = idField;
-                formulario.appendChild(campoId);
-            }
+        if (!campoSnapshot) {
+
+            campoSnapshot =
+                document.createElement("input");
+
+            campoSnapshot.type = "hidden";
+            campoSnapshot.name = snapshotField;
+
+            formulario.appendChild(
+                campoSnapshot
+            );
         }
 
-        if (campoId) {
-            campoId.value = select.value || "";
-        }
+        const option =
+            select.options[
+                select.selectedIndex
+            ];
+
+        campoSnapshot.value =
+            option
+                ? option.textContent.trim()
+                : "";
     }
+}
 
 
     function atualizarIdsRelacionados() {
