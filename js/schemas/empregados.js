@@ -255,6 +255,63 @@ fields: [
                 true
         },
 
+         // ----------------------------------------------------
+        // CLASSIFICAÇÃO
+        // ----------------------------------------------------
+
+        {
+            name:
+                "classificacao",
+
+            label:
+                "Classificação",
+
+            type:
+                "select",
+
+            required:
+                true,
+
+            visible:
+                true,
+
+            options: [
+
+                {
+                    value:
+                        "admin",
+
+                    label:
+                        "Admin"
+                },
+
+                {
+                    value:
+                        "supervisor",
+
+                    label:
+                        "Supervisor"
+                },
+
+                {
+                    value:
+                        "motorista",
+
+                    label:
+                        "Motorista"
+                },
+
+                {
+                    value:
+                        "usuario",
+
+                    label:
+                        "Usuário"
+                },
+                
+            ]
+        },
+
 
         // ----------------------------------------------------
         // STATUS
