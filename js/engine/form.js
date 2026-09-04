@@ -40,6 +40,8 @@
 
 import { listar as listarRelacionados } from "../services/crudService.js";
 
+import { obterLocalizacao } from "../utils/geolocalizacao.js";
+
 
 /* ============================================================
    CREATE FORM
@@ -208,6 +210,52 @@ novo() {
 
 
     form.limpar();
+
+
+// ====================================================
+// GPS → ABERTURA DA OCORRÊNCIA
+// ====================================================
+
+const campoLocalizacao =
+    formulario.elements.namedItem(
+        "localizacao"
+    );
+
+if (campoLocalizacao) {
+
+    campoLocalizacao.value = "";
+
+    obterLocalizacao()
+
+        .then(
+            coordenadas => {
+
+                campoLocalizacao.value =
+                    coordenadas;
+
+                console.log(
+                    `FORM ${entity} → GPS INICIAL:`,
+                    coordenadas
+                );
+
+            }
+        )
+
+        .catch(
+            erro => {
+
+                console.warn(
+                    `FORM ${entity} → GPS INICIAL NÃO OBTIDO:`,
+                    erro.message
+                );
+
+            }
+        );
+
+}
+
+
+   
 
 
     // ====================================================
@@ -472,7 +520,7 @@ if (campoData) {
            OBTER DADOS
         ==================================================== */
 
-        obterDados() {
+        async obterDados() {
 
             garantirInicializado();
 
@@ -548,15 +596,83 @@ if (campoData) {
             );
 
 
-            console.log(
-                `FORM ${entity} → DADOS PARA SALVAR:`,
-                dados
+            // ====================================================
+    // GPS FINAL
+    // ====================================================
+
+    const kmFinal =
+        dados.km_final;
+
+
+    const kmInicial =
+        dados.km_inicial;
+
+
+    const deveConcluir =
+        kmFinal !== null &&
+        kmFinal !== undefined &&
+        String(kmFinal).trim() !== "" &&
+        kmInicial !== null &&
+        kmInicial !== undefined &&
+        Number(kmFinal) > Number(kmInicial);
+
+
+    if (deveConcluir) {
+
+        const campoLocalizacaoFinal =
+            formulario.elements.namedItem(
+                "localizacao_final"
             );
 
 
-            return dados;
+        if (campoLocalizacaoFinal) {
 
-        },
+            /*
+             * Captura o GPS somente na conclusão.
+             */
+
+            try {
+
+                const coordenadas =
+                    await obterLocalizacao();
+
+
+                campoLocalizacaoFinal.value =
+                    coordenadas;
+
+
+                dados.localizacao_final =
+                    coordenadas;
+
+
+                console.log(
+                    `FORM ${entity} → GPS FINAL:`,
+                    coordenadas
+                );
+
+            } catch (erro) {
+
+                console.warn(
+                    `FORM ${entity} → GPS FINAL NÃO OBTIDO:`,
+                    erro.message
+                );
+
+            }
+
+        }
+
+    }
+
+
+    console.log(
+        `FORM ${entity} → DADOS PARA SALVAR:`,
+        dados
+    );
+
+
+    return dados;
+
+},
 
 
         /* ====================================================
