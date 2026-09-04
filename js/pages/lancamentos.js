@@ -80,6 +80,24 @@ async function iniciarLancamentos() {
 
 
 
+modulo.abrirChecklist =
+    abrirChecklist;
+
+modulo.abrirAbastecimento =
+    abrirAbastecimento;
+
+modulo.abrirAvarias =
+    abrirAvarias;
+
+modulo.abrirLavaCar =
+    abrirLavaCar;
+
+
+
+
+    
+
+
 
 
 // =================================================================================================================================
@@ -250,17 +268,7 @@ function abrirLavaCar() {
 }
 
 
-modulo.abrirChecklist =
-    abrirChecklist;
 
-modulo.abrirAbastecimento =
-    abrirAbastecimento;
-
-modulo.abrirAvarias =
-    abrirAvarias;
-
-modulo.abrirLavaCar =
-    abrirLavaCar;
 
 
 
@@ -277,6 +285,111 @@ modulo.abrirLavaCar =
     window.lancamentos = modulo;
     await modulo.iniciar();
     instalarControlesDoCiclo();
+
+
+
+registrarBotoesRelacionados();
+    
+
+
+
+function registrarBotoesRelacionados() {
+
+    const container =
+        document.querySelector("#app");
+
+    if (!container) {
+        return;
+    }
+
+
+    /*
+     * Evita registrar o mesmo evento mais de uma vez.
+     */
+
+    if (
+        container.dataset
+            .lancamentosRelacionadosRegistrados === "true"
+    ) {
+        return;
+    }
+
+
+    container.dataset
+        .lancamentosRelacionadosRegistrados = "true";
+
+
+    container.addEventListener(
+        "click",
+        evento => {
+
+            const botao =
+                evento.target.closest(
+                    "[data-lancamento-aux]"
+                );
+
+            if (!botao) {
+                return;
+            }
+
+
+            const acao =
+                botao.dataset.lancamentoAux;
+
+
+            switch (acao) {
+
+                case "Checklist":
+
+                    abrirChecklist();
+
+                    break;
+
+
+                case "Abastecimento":
+
+                    abrirAbastecimento();
+
+                    break;
+
+
+                case "Avarias":
+
+                    abrirAvarias();
+
+                    break;
+
+
+                case "Lava-car":
+
+                    abrirLavaCar();
+
+                    break;
+
+            }
+
+        }
+    );
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
     console.log("PÁGINA LANÇAMENTOS → MÓDULO CRIADO:", modulo);
     return modulo;
@@ -337,6 +450,11 @@ function instalarControlesDoCiclo() {
         await modulo.editar(id);
     });
 
+
+
+/*
+    
+
     // Botões auxiliares são preparados agora, mas os formulários
     // específicos serão conectados na próxima etapa.
     container.addEventListener("click", evento => {
@@ -345,6 +463,11 @@ function instalarControlesDoCiclo() {
         const acao = botao.dataset.lancamentoAux;
         alert(`Formulário de ${acao} será conectado na próxima etapa.`);
     });
+
+*/
+
+
+    
 }
 
 function configurarAbertura() {
