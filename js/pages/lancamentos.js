@@ -70,6 +70,8 @@ async function iniciarLancamentos() {
                 { name: "veiculo", label: "Veículo / Modelo" },
                 { name: "passageiro_setor_motivo", label: "Passageiro / Setor / Motivo" },
                 { name: "itinerario", label: "Itinerário" },
+                { name: "horario_inicial", label: "Horário Inicial", type: "time",
+                  format: formatarHora },
                 { name: "status", label: "Status" }
             ]
         }
