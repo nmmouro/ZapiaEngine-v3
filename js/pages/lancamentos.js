@@ -76,6 +76,204 @@ async function iniciarLancamentos() {
         }
     });
 
+
+
+
+
+
+
+// =================================================================================================================================
+// FORMULÁRIOS RELACIONADOS
+// ============================================================
+
+function obterLancamentoAtual() {
+
+    const estado =
+        modulo.engine?.state;
+
+    if (!estado) {
+        return null;
+    }
+
+    return estado.registroEditando || null;
+}
+
+
+function obterContextoLancamento() {
+
+    const lancamento =
+        obterLancamentoAtual();
+
+    if (!lancamento) {
+
+        throw new Error(
+            "Nenhum lançamento está selecionado."
+        );
+
+    }
+
+    if (!lancamento.id) {
+
+        throw new Error(
+            "O lançamento ainda não possui ID."
+        );
+
+    }
+
+    return {
+
+        id_lancamento:
+            lancamento.id,
+
+        id_empregado:
+            lancamento.id_empregado || "",
+
+        id_veiculo:
+            lancamento.id_veiculo || "",
+
+        empregado_matricula:
+            lancamento.empregado_matricula || "",
+
+        veiculo:
+            lancamento.veiculo || ""
+
+    };
+
+}
+
+
+function abrirFormularioRelacionado(
+    entidade
+) {
+
+    try {
+
+        const contexto =
+            obterContextoLancamento();
+
+        console.log(
+            "LANÇAMENTOS → ABRIR FORMULÁRIO RELACIONADO:",
+            entidade,
+            contexto
+        );
+
+
+        /*
+         * Guarda o contexto da ocorrência.
+         *
+         * Os módulos específicos utilizarão
+         * esses dados para preencher
+         * id_lancamento, empregado e veículo.
+         */
+
+        window.lancamentoRelacionado = {
+
+            entidade,
+
+            contexto
+
+        };
+
+
+        /*
+         * Aqui será feita a navegação/abertura
+         * do formulário específico.
+         */
+
+        const evento =
+            new CustomEvent(
+                "lancamento:abrir-relacionado",
+                {
+                    detail: {
+                        entidade,
+                        contexto
+                    }
+                }
+            );
+
+
+        document.dispatchEvent(
+            evento
+        );
+
+
+    } catch (erro) {
+
+        console.error(
+            "LANÇAMENTOS → ERRO AO ABRIR FORMULÁRIO:",
+            erro
+        );
+
+        alert(
+            erro.message ||
+            "Não foi possível abrir o formulário."
+        );
+
+    }
+
+}
+
+
+function abrirChecklist() {
+
+    abrirFormularioRelacionado(
+        "checklist"
+    );
+
+}
+
+
+function abrirAbastecimento() {
+
+    abrirFormularioRelacionado(
+        "abastecimento"
+    );
+
+}
+
+
+function abrirAvarias() {
+
+    abrirFormularioRelacionado(
+        "avarias"
+    );
+
+}
+
+
+function abrirLavaCar() {
+
+    abrirFormularioRelacionado(
+        "lava_car"
+    );
+
+}
+
+
+modulo.abrirChecklist =
+    abrirChecklist;
+
+modulo.abrirAbastecimento =
+    abrirAbastecimento;
+
+modulo.abrirAvarias =
+    abrirAvarias;
+
+modulo.abrirLavaCar =
+    abrirLavaCar;
+
+
+
+
+
+
+
+
+
+
+
+    
+
     window.lancamentos = modulo;
     await modulo.iniciar();
     instalarControlesDoCiclo();
