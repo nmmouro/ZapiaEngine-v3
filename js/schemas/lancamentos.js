@@ -180,7 +180,7 @@ export const SCHEMA_LANCAMENTOS = {
             name: "registro_avarias",
             label: "Registro de Avarias",
             type: "select",
-            required: true,
+            required: false,
             visible: true,
             options: [
                 "SIM",
@@ -374,7 +374,7 @@ export const SCHEMA_LANCAMENTOS = {
             label: "Status",
             type: "select",
             required: false,
-            visible: true,
+            visible: false,
             options: [
                 "EM ANDAMENTO",
                 "CONCLUÍDO",
@@ -429,7 +429,7 @@ export const SCHEMA_LANCAMENTOS = {
             label: "Classificação",
             type: "select",
             required: false,
-            visible: true,
+            visible: false,
             
         },
 
@@ -442,7 +442,7 @@ export const SCHEMA_LANCAMENTOS = {
             label: "Localização",
             type: "text",
             required: false,
-            visible: true
+            visible: false
         },
 
         // ========================================================
@@ -454,7 +454,7 @@ export const SCHEMA_LANCAMENTOS = {
             label: "Localização Final",
             type: "text",
             required: false,
-            visible: true
+            visible: false
         },
 
         // ========================================================
