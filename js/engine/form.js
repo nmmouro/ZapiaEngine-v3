@@ -701,7 +701,7 @@ if (campoData) {
             try {
 
                 const dados =
-                    form.obterDados();
+                    await form.obterDados();
 
 
                 /*
