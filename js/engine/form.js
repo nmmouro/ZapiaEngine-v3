@@ -324,7 +324,7 @@ if (campoData) {
             agora.getMinutes()
         ).padStart(2, "0");
 
-
+/*
     const campoHora =
         formulario.elements.namedItem(
             "hora"
@@ -346,7 +346,63 @@ if (campoData) {
         `${dia}/${mes}/${ano}`,
         `${horas}:${minutos}`
     );
+*/
 
+// ----------------------------------------------------
+// HORA → HH:MM
+// Preenchida automaticamente e BLOQUEADA
+// ----------------------------------------------------
+
+const horaAtual =
+    `${horas}:${minutos}`;
+
+
+const campoHora =
+    formulario.elements.namedItem(
+        "hora"
+    );
+
+
+if (campoHora) {
+
+    preencherCampo(
+        campoHora,
+        horaAtual
+    );
+
+    // Hora da abertura não pode ser alterada
+    campoHora.readOnly = true;
+
+}
+
+
+// ----------------------------------------------------
+// HORÁRIO INICIAL → HH:MM
+// Recebe automaticamente a mesma hora,
+// mas permanece EDITÁVEL pelo usuário.
+// ----------------------------------------------------
+
+const campoHorarioInicial =
+    formulario.elements.namedItem(
+        "horario_inicial"
+    );
+
+
+if (campoHorarioInicial) {
+
+    preencherCampo(
+        campoHorarioInicial,
+        horaAtual
+    );
+
+    // Diferente de "hora", este campo pode
+    // ser alterado pelo usuário.
+    campoHorarioInicial.readOnly = false;
+
+}
+
+
+   
 
     // ====================================================
     // MOSTRAR FORMULÁRIO
