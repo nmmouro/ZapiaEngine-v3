@@ -208,7 +208,7 @@ export const SCHEMA_LANCAMENTOS = {
             name: "horario_inicial",
             label: "Horário Inicial",
             type: "time",
-            required: true,
+            required: false,
             visible: true
         },
 
@@ -220,7 +220,7 @@ export const SCHEMA_LANCAMENTOS = {
             name: "km_inicial",
             label: "Km Inicial",
             type: "number",
-            required: true,
+            required: false,
             visible: true,
             min: 0,
             step: 0.01
@@ -234,7 +234,7 @@ export const SCHEMA_LANCAMENTOS = {
             name: "km_final",
             label: "Km Final",
             type: "number",
-            required: true,
+            required: false,
             visible: true,
             min: 0,
             step: 0.01
@@ -248,7 +248,7 @@ export const SCHEMA_LANCAMENTOS = {
             name: "horario_final",
             label: "Horário Final",
             type: "time",
-            required: true,
+            required: false,
             visible: true
         },
 
@@ -260,7 +260,7 @@ export const SCHEMA_LANCAMENTOS = {
             name: "combustivel",
             label: "Combustível",
             type: "select",
-            required: true,
+            required: false,
             visible: true,
             options: [
                 "RESERVA",
@@ -373,7 +373,7 @@ export const SCHEMA_LANCAMENTOS = {
             name: "status",
             label: "Status",
             type: "select",
-            required: true,
+            required: false,
             visible: true,
             options: [
                 "EM ANDAMENTO",
