@@ -430,12 +430,7 @@ export const SCHEMA_LANCAMENTOS = {
             type: "select",
             required: false,
             visible: true,
-            options: [
-                "ADMIN",
-                "SUPERVISOR",
-                "MOTORISTA",
-                "USUÁRIO"
-            ]
+            
         },
 
         // ========================================================
