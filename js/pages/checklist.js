@@ -14,8 +14,7 @@
 import { createModule } from "../engine/module.js";
 import { SCHEMA_CHECKLIST } from "../schemas/checklist.js";
 import {
-    listar,
-    obter
+    listar
 } from "../services/crudService.js";
 
 
@@ -25,10 +24,58 @@ let contextoLancamento = null;
 
 
 /* ============================================================
+   ERRO VISÍVEL
+   ============================================================ */
+
+function mostrarErroChecklist(erro) {
+
+    console.error(
+        "CHECKLIST → ERRO DE INICIALIZAÇÃO:",
+        erro
+    );
+
+    const app = document.querySelector("#app");
+
+    if (!app) return;
+
+    app.innerHTML = `
+        <div class="engine-form-wrapper">
+            <div class="engine-form-header">
+                <h2>Checklist</h2>
+            </div>
+            <div class="engine-form-empty" style="padding:20px;">
+                <strong>Não foi possível abrir o Checklist.</strong>
+                <p style="margin-top:10px;">${escaparMensagemChecklist(erro?.message || erro)}</p>
+                <button type="button" class="btn btn-secondary"
+                        data-checklist-voltar-erro>
+                    Voltar ao Lançamento
+                </button>
+            </div>
+        </div>
+    `;
+
+    const botao = app.querySelector("[data-checklist-voltar-erro]");
+
+    if (botao) {
+        botao.addEventListener("click", voltarAoLancamento);
+    }
+}
+
+function escaparMensagemChecklist(valor) {
+    return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* ============================================================
    INICIAR
 ============================================================ */
 
-async function iniciarChecklist() {
+async function iniciarChecklistInterno() {
 
     console.log("PÁGINA CHECKLIST → INICIANDO");
 
@@ -55,8 +102,18 @@ async function iniciarChecklist() {
         idLancamento
     );
 
+    // Busca o lançamento pelo ID. Usamos LISTAR com filtro explícito
+    // para manter compatibilidade com a API REST atual do projeto.
+    const lancamentos =
+        await listar(
+            "lancamentos",
+            { id: idLancamento }
+        );
+
     contextoLancamento =
-        await obter("lancamentos", idLancamento);
+        Array.isArray(lancamentos)
+            ? lancamentos[0] || null
+            : null;
 
     if (!contextoLancamento) {
         throw new Error(
@@ -355,6 +412,15 @@ function horaAtual() {
 /* ============================================================
    EXPORT
 ============================================================ */
+
+async function iniciarChecklist() {
+    try {
+        return await iniciarChecklistInterno();
+    } catch (erro) {
+        mostrarErroChecklist(erro);
+        return null;
+    }
+}
 
 export {
     iniciarChecklist,

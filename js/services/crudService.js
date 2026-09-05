@@ -953,6 +953,24 @@ function prepararDados(
         ([campo, valor]) => {
 
             /*
+             * Campos de auditoria são responsabilidade exclusiva
+             * do PostgreSQL. Nunca enviar esses campos pelo cliente.
+             *
+             * Isso é especialmente importante quando um formulário
+             * contém os campos ocultos criado_em/atualizado_em: se
+             * chegarem como null, o DEFAULT now() não é aplicado.
+             */
+            const nomeCampo =
+                String(campo).toLowerCase();
+
+            if (
+                nomeCampo === "criado_em" ||
+                nomeCampo === "atualizado_em"
+            ) {
+                return;
+            }
+
+            /*
              * Ignorar undefined.
              */
 
@@ -989,9 +1007,6 @@ function prepararDados(
             // URLs/caminhos de foto permanecem intactos para não quebrar
             // endereços sensíveis a maiúsculas/minúsculas.
             if (typeof valor === "string") {
-
-                const nomeCampo =
-                    String(campo).toLowerCase();
 
                 const preservar =
                     nomeCampo === "foto" ||
