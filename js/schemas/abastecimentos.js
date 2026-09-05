@@ -22,9 +22,7 @@ const SCHEMA_ABASTECIMENTO = {
         { name: "qtde_l", label: "Quantidade (L)", type: "number", required: true, min: 0, step: "0.001" },
         { name: "preco_l", label: "Preço por Litro (R$)", type: "number", required: true, min: 0, step: "0.001" },
         { name: "valor_total_nota", label: "Valor Total da Nota (R$)", type: "number", required: true, min: 0, step: "0.01" },
-        { name: "localizacao", label: "Localização GPS", type: "text", readonly: true },
-        { name: "criado_em", label: "Criado em", type: "datetime-local", required: false, visible: false, hidden: true, readonly: true },
-        { name: "atualizado_em", label: "Atualizado em", type: "datetime-local", required: false, visible: false, hidden: true, readonly: true }
+        { name: "localizacao", label: "Localização GPS", type: "text", readonly: true }
     ]
 };
 

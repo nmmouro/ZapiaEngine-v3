@@ -282,10 +282,15 @@ function abrirAbastecimento() {
 
 function abrirAvarias() {
 
-    abrirFormularioRelacionado(
-        "avarias"
-    );
-
+    try {
+        const contexto = obterContextoLancamento();
+        const url = `avarias.html?lancamento=${encodeURIComponent(contexto.id_lancamento)}`;
+        console.log("LANÇAMENTOS → ABRIR AVARIAS:", contexto);
+        window.location.href = url;
+    } catch (erro) {
+        console.error("LANÇAMENTOS → ERRO AO ABRIR AVARIAS:", erro);
+        alert(erro.message || "Não foi possível abrir o formulário de Avarias.");
+    }
 }
 
 

@@ -283,6 +283,17 @@
 
         if (
             caminho.endsWith(
+                "/avarias.html"
+            )
+        ) {
+
+            return "avarias";
+
+        }
+
+
+        if (
+            caminho.endsWith(
                 "/lancamentos.html"
             )
         ) {
@@ -443,6 +454,29 @@
                 return executarModulo(
                     modulo,
                     "ABASTECIMENTOS"
+                );
+
+            }
+
+
+            /* =================================================
+               AVARIAS
+            ================================================= */
+
+            case "avarias": {
+
+                console.log(
+                    "APP → CARREGANDO AVARIAS"
+                );
+
+                const modulo =
+                    await import(
+                        "./pages/avarias.js"
+                    );
+
+                return executarModulo(
+                    modulo,
+                    "AVARIAS"
                 );
 
             }
