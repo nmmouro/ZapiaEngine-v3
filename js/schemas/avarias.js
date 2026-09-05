@@ -22,7 +22,7 @@ export const SCHEMA_AVARIAS = {
         { name: "veiculo", label: "Veículo / Modelo", type: "text", readonly: true },
         { name: "vista_frontal", label: "Vista frontal", type: "file", accept: "image/*", capture: "environment" },
         { name: "vista_traseira", label: "Vista traseira", type: "file", accept: "image/*", capture: "environment" },
-        { name: "vista_lateral_direta", label: "Vista lateral direita", type: "file", accept: "image/*", capture: "environment" },
+        { name: "vista_lateral_direita", label: "Vista lateral direita", type: "file", accept: "image/*", capture: "environment" },
         { name: "vista_lateral_esquerda", label: "Vista lateral esquerda", type: "file", accept: "image/*", capture: "environment" },
         { name: "vista_teto", label: "Vista do teto", type: "file", accept: "image/*", capture: "environment" },
         { name: "relato_avaria", label: "Relato da avaria", type: "textarea" },
