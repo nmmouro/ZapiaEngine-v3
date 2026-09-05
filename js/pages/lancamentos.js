@@ -295,11 +295,26 @@ function abrirAvarias() {
 
 
 function abrirLavaCar() {
-
+/*
     abrirFormularioRelacionado(
         "lava_car"
     );
+*/
 
+    try {
+        const contexto = obterContextoLancamento();
+        const url = `lava_car.html?lancamento=${encodeURIComponent(contexto.id_lancamento)}`;
+        console.log("LANÇAMENTOS → ABRIR LAVA-CAR:", contexto);
+        window.location.href = url;
+    } catch (erro) {
+        console.error("LANÇAMENTOS → ERRO AO ABRIR LAVA-CAR:", erro);
+        alert(erro.message || "Não foi possível abrir o formulário de Lava-car.");
+    }
+
+
+
+
+    
 }
 
 
