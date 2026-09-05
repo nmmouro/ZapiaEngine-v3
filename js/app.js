@@ -506,6 +506,29 @@
 
 
             /* =================================================
+               LAVA-CAR
+            ================================================= */
+
+            case "lava_car": {
+
+                console.log(
+                    "APP → CARREGANDO LAVA-CAR"
+                );
+
+                const modulo =
+                    await import(
+                        "./pages/lava_car.js"
+                    );
+
+                return executarModulo(
+                    modulo,
+                    "LAVA-CAR"
+                );
+
+            }
+
+
+            /* =================================================
                LANÇAMENTOS
             ================================================= */
 
