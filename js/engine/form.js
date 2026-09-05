@@ -599,8 +599,7 @@ if (campoHorarioInicial) {
                 );
 
 
-            elementos.forEach(
-                campo => {
+            for (const campo of elementos) {
 
                     const nome =
                         campo.name;
@@ -629,10 +628,16 @@ if (campoHorarioInicial) {
                     }
 
 
-                    let valor =
-                        obterValorCampo(
-                            campo
-                        );
+                    let valor;
+
+                    if (campo.type === "file") {
+                        const arquivo = campo.files?.[0] || null;
+                        valor = arquivo
+                            ? await arquivoComoDataURL(arquivo)
+                            : "";
+                    } else {
+                        valor = obterValorCampo(campo);
+                    }
 
                     // Campos de texto do formulário são exibidos
                     // e enviados em CAIXA ALTA.
@@ -649,7 +654,6 @@ if (campoHorarioInicial) {
                     dados[nome] = valor;
 
                 }
-            );
 
 
             // ====================================================
@@ -1447,6 +1451,17 @@ if (campoHorarioInicial) {
                 : "autocomplete=\"off\"";
 
 
+        const accept =
+            campo.accept
+                ? `accept="${escaparAtributo(campo.accept)}"`
+                : "";
+
+        const capture =
+            campo.capture
+                ? `capture="${escaparAtributo(campo.capture)}"`
+                : "";
+
+
         /*
          * SELECT
          */
@@ -1565,6 +1580,8 @@ if (campoHorarioInicial) {
                 ${maxlength}
                 ${pattern}
                 ${autocomplete}
+                ${accept}
+                ${capture}
             >
 
         `;
@@ -2943,6 +2960,16 @@ function atualizarIdsRelacionados() {
      * OBTER VALOR DO CAMPO
      * ========================================================
      */
+
+    function arquivoComoDataURL(arquivo) {
+        return new Promise((resolve, reject) => {
+            const leitor = new FileReader();
+            leitor.onload = () => resolve(String(leitor.result || ""));
+            leitor.onerror = () => reject(new Error("Não foi possível ler a imagem selecionada."));
+            leitor.readAsDataURL(arquivo);
+        });
+    }
+
 
     function obterValorCampo(
         campo

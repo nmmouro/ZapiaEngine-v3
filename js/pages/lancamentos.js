@@ -268,11 +268,15 @@ function abrirChecklist() {
 
 
 function abrirAbastecimento() {
-
-    abrirFormularioRelacionado(
-        "abastecimento"
-    );
-
+    try {
+        const contexto = obterContextoLancamento();
+        const url = `abastecimentos.html?lancamento=${encodeURIComponent(contexto.id_lancamento)}`;
+        console.log("LANÇAMENTOS → ABRIR ABASTECIMENTO:", contexto);
+        window.location.href = url;
+    } catch (erro) {
+        console.error("LANÇAMENTOS → ERRO AO ABRIR ABASTECIMENTO:", erro);
+        alert(erro.message || "Não foi possível abrir o formulário de Abastecimento.");
+    }
 }
 
 
