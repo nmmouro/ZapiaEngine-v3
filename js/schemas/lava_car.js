@@ -27,7 +27,7 @@ export const SCHEMA_LAVA_CAR = {
 
         { name: "valor", label: "Valor (R$)", type: "number", readonly: true, required: true },
         { name: "usuario", label: "Usuário", type: "text", readonly: true },
-        { name: "localizacao", label: "Localização", type: "text", readonly: true },
+        
 
         { name: "criado_em", label: "Criado em", type: "datetime", readonly: true, hidden: true },
         { name: "atualizado_em", label: "Atualizado em", type: "datetime", readonly: true, hidden: true }
