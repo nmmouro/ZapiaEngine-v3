@@ -1,6 +1,20 @@
+/**
+ * ============================================================
+ * PÁGINA — LAVA-CAR
+ * Painel Frota
+ *
+ * Fluxo:
+ *     Lançamento → Lava-Car → Salvar → Retornar
+ *
+ * URL:
+ *     lava_car.html?lancamento=LAN000001
+ * ============================================================
+ */
+
 import { createModule } from "../engine/module.js";
 import { SCHEMA_LAVA_CAR } from "../schemas/lava_car.js";
 import { listar } from "../services/crudService.js";
+import { obterLocalizacao } from "../utils/geolocalizacao.js";
 
 const VALORES = {
     aparencia_creta: 60.00,
@@ -11,94 +25,241 @@ const VALORES = {
     completa_cera_trail: 120.00
 };
 
-const params = new URLSearchParams(window.location.search);
-const idLancamento = params.get("lancamento") || params.get("id_lancamento");
+let modulo = null;
+let idLancamento = "";
+let contextoLancamento = null;
 
-function formatarMoeda(valor) {
-    return Number(valor || 0).toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-}
+export async function iniciarLavaCar() {
+    console.log("PÁGINA LAVA-CAR → INICIANDO");
 
-function obterContexto() {
-    try {
-        const raw = sessionStorage.getItem("lancamento_contexto");
-        if (raw) return JSON.parse(raw);
-    } catch (_) {}
-    return null;
-}
-
-async function obterGPS() {
-    if (!navigator.geolocation) return "";
-    return new Promise(resolve => {
-        navigator.geolocation.getCurrentPosition(
-            pos => resolve(`${pos.coords.latitude},${pos.coords.longitude}`),
-            () => resolve(""),
-            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-        );
-    });
-}
-
-function preencherContexto(modulo) {
-    const contexto = obterContexto() || {};
-    const dados = {
-        id_lancamento: idLancamento || contexto.id_lancamento || contexto.id || "",
-        data: contexto.data || new Date().toISOString().slice(0, 10),
-        hora: contexto.hora || new Date().toTimeString().slice(0, 5),
-        empregado_matricula: contexto.empregado_matricula || contexto["empregado / matricula"] || "",
-        veiculo: contexto.veiculo || contexto["veículo / modelo"] || ""
-    };
-
-    const form = modulo.form?.container || document;
-    Object.entries(dados).forEach(([name, value]) => {
-        const el = form.querySelector?.(`[name="${name}"]`);
-        if (el) el.value = value;
-    });
-
-    const opcao = form.querySelector?.('[name="opcao"]');
-    const valor = form.querySelector?.('[name="valor"]');
-
-    opcao?.addEventListener("change", () => {
-        const v = VALORES[opcao.value];
-        if (valor) valor.value = v == null ? "" : v.toFixed(2);
-    });
-}
-
-async function iniciar() {
     const container = document.querySelector("#app");
-    if (!container) return;
+    if (!container) {
+        throw new Error("PÁGINA LAVA-CAR → #app não encontrado.");
+    }
 
-    const modulo = createModule({
+    idLancamento = String(
+        new URLSearchParams(window.location.search).get("lancamento") || ""
+    ).trim();
+
+    if (!idLancamento) {
+        throw new Error("Nenhum lançamento foi informado para o Lava-Car.");
+    }
+
+    const lancamentos = await listar("lancamentos", { id: idLancamento });
+    contextoLancamento = Array.isArray(lancamentos)
+        ? lancamentos[0] || null
+        : null;
+
+    if (!contextoLancamento) {
+        throw new Error(`Lançamento ${idLancamento} não encontrado.`);
+    }
+
+    modulo = createModule({
         entity: "lava_car",
         schema: SCHEMA_LAVA_CAR,
-        container,
+        container: "#app",
+        stateName: "lava_car",
         options: {
-            titulo: "Lava-car",
-            tabela: "Lava-car",
-            permitirNovo: true,
-            permitirEditar: true,
-            permitirExcluir: true
+            titulo: "Lava-Car",
+            tabela: "Lava-Car Registrados",
+            permitirNovo: false,
+            permitirEditar: false,
+            permitirExcluir: false,
+            pageSize: 10,
+            colunas: [
+                { name: "data", label: "Data", format: formatarData },
+                { name: "hora", label: "Hora", format: formatarHora },
+                { name: "empregado_matricula", label: "Empregado / Matrícula" },
+                { name: "veiculo", label: "Veículo / Modelo" },
+                { name: "opcao", label: "Serviço" },
+                { name: "valor", label: "Valor (R$)" }
+            ]
         }
     });
 
     window.lavaCar = modulo;
+
     await modulo.iniciar();
-    modulo.novo();
-    preencherContexto(modulo);
+    garantirCampoOculto("id_lancamento");
+    adicionarBotaoVoltar();
 
-    const localizacao = await obterGPS();
-    const loc = (modulo.form?.container || document).querySelector?.('[name="localizacao"]');
-    if (loc) loc.value = localizacao;
+    const registros = await listar("lava_car", { id_lancamento: idLancamento });
+    const existente = Array.isArray(registros) && registros.length
+        ? registros[0]
+        : null;
 
-    const voltar = document.querySelector("#btnVoltarLancamento");
-    voltar?.addEventListener("click", () => {
-        if (idLancamento) {
-            window.location.href = `lancamentos.html?editar=${encodeURIComponent(idLancamento)}`;
-        } else {
-            window.history.back();
-        }
+    if (existente?.id) {
+        console.log("LAVA-CAR → REGISTRO EXISTENTE:", existente.id);
+        await modulo.editar(existente.id);
+        preencherContexto(existente);
+    } else {
+        console.log("LAVA-CAR → NOVO REGISTRO");
+        modulo.novo();
+        preencherContexto();
+    }
+
+    instalarSelecaoServico();
+    await capturarGPS();
+    instalarRetornoAposSalvar();
+
+    console.log("PÁGINA LAVA-CAR → INICIADO");
+    return modulo;
+}
+
+export async function iniciar() {
+    try {
+        return await iniciarLavaCar();
+    } catch (erro) {
+        mostrarErro(erro);
+        return null;
+    }
+}
+
+function preencherContexto(registro = {}) {
+    setValor("id_lancamento", registro.id_lancamento || idLancamento);
+    setValor("data", registro.data || contextoLancamento.data || dataAtual());
+    setValor("hora", formatarHora(registro.hora) || formatarHora(contextoLancamento.hora) || horaAtual());
+    setValor("empregado_matricula",
+        registro.empregado_matricula || contextoLancamento.empregado_matricula || "");
+    setValor("veiculo",
+        registro.veiculo || contextoLancamento.veiculo || "");
+    setValor("usuario",
+        registro.usuario || contextoLancamento.usuario || "");
+}
+
+function instalarSelecaoServico() {
+    const opcao = getCampo("opcao");
+    const valor = getCampo("valor");
+    if (!opcao || !valor) return;
+
+    const atualizar = () => {
+        const preco = VALORES[opcao.value];
+        valor.value = preco == null ? "" : preco.toFixed(2);
+    };
+
+    opcao.addEventListener("change", atualizar);
+    atualizar();
+}
+
+async function capturarGPS() {
+    const campo = getCampo("localizacao");
+    if (!campo) return;
+
+    try {
+        const coordenadas = await obterLocalizacao();
+        campo.value = coordenadas || "";
+        console.log("LAVA-CAR → GPS:", coordenadas || "não obtido");
+    } catch (erro) {
+        campo.value = "";
+        console.warn("LAVA-CAR → GPS NÃO OBTIDO:", erro?.message || erro);
+    }
+}
+
+function instalarRetornoAposSalvar() {
+    const container = modulo?.form?.container;
+    if (!container || container.dataset.lavaCarRetorno === "true") return;
+
+    container.dataset.lavaCarRetorno = "true";
+    container.addEventListener(
+        "form:salvo",
+        () => voltarAoLancamento(),
+        { once: true }
+    );
+}
+
+function adicionarBotaoVoltar() {
+    const form = modulo?.form?.formulario;
+    if (!form || form.querySelector("[data-lava-car-voltar]")) return;
+
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "btn btn-secondary";
+    botao.dataset.lavaCarVoltar = "true";
+    botao.textContent = "Voltar ao Lançamento";
+    botao.addEventListener("click", voltarAoLancamento);
+
+    const actions = form.querySelector(".engine-form-actions");
+    (actions || form).appendChild(botao);
+}
+
+function voltarAoLancamento() {
+    window.location.href =
+        `lancamentos.html?editar=${encodeURIComponent(idLancamento)}`;
+}
+
+function garantirCampoOculto(nome) {
+    const form = modulo?.form?.formulario;
+    if (!form || form.elements.namedItem(nome)) return;
+
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = nome;
+    form.appendChild(input);
+}
+
+function getCampo(nome) {
+    return modulo?.form?.formulario?.elements?.namedItem(nome) || null;
+}
+
+function setValor(nome, valor) {
+    const campo = getCampo(nome);
+    if (campo) campo.value = valor ?? "";
+}
+
+function formatarData(valor) {
+    const texto = String(valor ?? "").trim();
+    const m = texto.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : texto;
+}
+
+function formatarHora(valor) {
+    const texto = String(valor ?? "").trim();
+    const m = texto.match(/^(\d{2}):(\d{2})/);
+    return m ? `${m[1]}:${m[2]}` : "";
+}
+
+function dataAtual() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function horaAtual() {
+    const d = new Date();
+    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+function mostrarErro(erro) {
+    console.error("PÁGINA LAVA-CAR → ERRO:", erro);
+    const app = document.querySelector("#app");
+    if (!app) return;
+
+    app.innerHTML = `
+        <div class="engine-form-wrapper">
+            <div class="engine-form-header">
+                <h2>Lava-Car</h2>
+            </div>
+            <div class="engine-form-empty" style="padding:20px;">
+                <strong>Não foi possível abrir o Lava-Car.</strong>
+                <p style="margin-top:10px;">${escapar(erro?.message || erro)}</p>
+                <button type="button" class="btn btn-secondary" data-lava-car-erro-voltar>
+                    Voltar ao Lançamento
+                </button>
+            </div>
+        </div>
+    `;
+
+    const botao = app.querySelector("[data-lava-car-erro-voltar]");
+    if (botao) botao.addEventListener("click", () => {
+        if (idLancamento) voltarAoLancamento();
+        else window.history.back();
     });
 }
 
-document.addEventListener("DOMContentLoaded", iniciar);
+function escapar(valor) {
+    return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
