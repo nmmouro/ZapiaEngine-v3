@@ -14,7 +14,7 @@
 import { createModule } from "../engine/module.js";
 import { SCHEMA_LAVA_CAR } from "../schemas/lava_car.js";
 import { listar } from "../services/crudService.js";
-import { obterLocalizacao } from "../utils/geolocalizacao.js";
+
 
 const VALORES = {
     aparencia_creta: 60.00,
