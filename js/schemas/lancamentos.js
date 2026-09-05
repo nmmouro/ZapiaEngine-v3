@@ -181,7 +181,7 @@ export const SCHEMA_LANCAMENTOS = {
             label: "Registro de Avarias",
             type: "select",
             required: false,
-            visible: true,
+            visible: false,
             options: [
                 "SIM",
                 "NÃO"
@@ -197,7 +197,7 @@ export const SCHEMA_LANCAMENTOS = {
             label: "Avarias Registradas",
             type: "textarea",
             required: false,
-            visible: true
+            visible: false
         },
 
         // ========================================================
@@ -391,7 +391,7 @@ export const SCHEMA_LANCAMENTOS = {
             label: "Horas Extras",
             type: "time",
             required: false,
-            visible: true
+            visible: false
         },
 
         // ========================================================
