@@ -234,9 +234,35 @@ function abrirFormularioRelacionado(
 
 function abrirChecklist() {
 
-    abrirFormularioRelacionado(
-        "checklist"
-    );
+    try {
+
+        const contexto = obterContextoLancamento();
+
+        console.log(
+            "LANÇAMENTOS → ABRIR CHECKLIST:",
+            contexto
+        );
+
+        const url =
+            `checklist.html?lancamento=${encodeURIComponent(
+                contexto.id_lancamento
+            )}`;
+
+        window.location.href = url;
+
+    } catch (erro) {
+
+        console.error(
+            "LANÇAMENTOS → ERRO AO ABRIR CHECKLIST:",
+            erro
+        );
+
+        alert(
+            erro.message ||
+            "Não foi possível abrir o Checklist."
+        );
+
+    }
 
 }
 
@@ -286,6 +312,17 @@ function abrirLavaCar() {
     await modulo.iniciar();
     instalarControlesDoCiclo();
 
+    const idRetorno =
+        new URLSearchParams(window.location.search).get("editar");
+
+    if (idRetorno) {
+        console.log(
+            "LANÇAMENTOS → REABRINDO OCORRÊNCIA:",
+            idRetorno
+        );
+
+        await modulo.editar(idRetorno);
+    }
 
 
 registrarBotoesRelacionados();

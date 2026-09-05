@@ -26,13 +26,15 @@ export const SCHEMA_CHECKLIST = {
         {
             name: "data",
             label: "Data",
-            type: "date"
+            type: "date",
+            readonly: true
         },
 
         {
             name: "hora",
             label: "Hora",
-            type: "time"
+            type: "time",
+            readonly: true
         },
 
         {

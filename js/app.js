@@ -272,6 +272,17 @@
 
         if (
             caminho.endsWith(
+                "/checklist.html"
+            )
+        ) {
+
+            return "checklist";
+
+        }
+
+
+        if (
+            caminho.endsWith(
                 "/lancamentos.html"
             )
         ) {
@@ -432,6 +443,29 @@
                 return executarModulo(
                     modulo,
                     "ABASTECIMENTOS"
+                );
+
+            }
+
+
+            /* =================================================
+               CHECKLIST
+            ================================================= */
+
+            case "checklist": {
+
+                console.log(
+                    "APP → CARREGANDO CHECKLIST"
+                );
+
+                const modulo =
+                    await import(
+                        "./pages/checklist.js"
+                    );
+
+                return executarModulo(
+                    modulo,
+                    "CHECKLIST"
                 );
 
             }
