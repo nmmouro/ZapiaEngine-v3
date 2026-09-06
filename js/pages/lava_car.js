@@ -133,6 +133,12 @@ function instalarSelecaoServico() {
     if (!opcao || !valor) return;
 
     const atualizar = () => {
+
+        console.log(
+        "LAVA-CAR → OPÇÃO SELECIONADA:",
+        opcao.value
+    );
+        
         const preco = VALORES[opcao.value];
         valor.value = preco == null ? "" : preco.toFixed(2);
     };
