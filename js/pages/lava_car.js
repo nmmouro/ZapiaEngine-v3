@@ -99,7 +99,7 @@ export async function iniciarLavaCar() {
     }
 
     instalarSelecaoServico();
-    await capturarGPS();
+    
     instalarRetornoAposSalvar();
 
     console.log("PÁGINA LAVA-CAR → INICIADO");
@@ -141,19 +141,6 @@ function instalarSelecaoServico() {
     atualizar();
 }
 
-async function capturarGPS() {
-    const campo = getCampo("localizacao");
-    if (!campo) return;
-
-    try {
-        const coordenadas = await obterLocalizacao();
-        campo.value = coordenadas || "";
-        console.log("LAVA-CAR → GPS:", coordenadas || "não obtido");
-    } catch (erro) {
-        campo.value = "";
-        console.warn("LAVA-CAR → GPS NÃO OBTIDO:", erro?.message || erro);
-    }
-}
 
 function instalarRetornoAposSalvar() {
     const container = modulo?.form?.container;
